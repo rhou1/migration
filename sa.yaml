@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pv-backup-sa
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: pv-backup-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/exec", "persistentvolumeclaims"]
+  verbs: ["get", "list"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pv-backup-role-binding
+subjects:
+- kind: ServiceAccount
+  name: pv-backup-sa
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: pv-backup-role
+  apiGroup: rbac.authorization.k8s.io
